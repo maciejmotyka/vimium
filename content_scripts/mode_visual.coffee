@@ -166,38 +166,38 @@ class Movement
 class VisualMode extends KeyHandlerMode
   # A movement can be either a string or a function.
   movements:
-    "l": "forward character"
-    "h": "backward character"
-    "j": "forward line"
-    "k": "backward line"
-    "e": "forward word"
-    "b": "backward word"
-    "w": "forward vimword"
+    "n": "forward character"
+    "d": "backward character"
+    "h": "forward line"
+    "t": "backward line"
+    ".": "forward word"
+    "x": "backward word"
+    ",": "forward vimword"
     ")": "forward sentence"
     "(": "backward sentence"
-    "}": "forward paragraph"
-    "{": "backward paragraph"
+    "+": "forward paragraph"
+    "?": "backward paragraph"
     "0": "backward lineboundary"
     "$": "forward lineboundary"
-    "G": "forward documentboundary"
-    "gg": "backward documentboundary"
+    "I": "forward documentboundary"
+    "ii": "backward documentboundary"
 
-    "aw": (count) -> @movement.selectLexicalEntity word, count
-    "as": (count) -> @movement.selectLexicalEntity sentence, count
+    "a,": (count) -> @movement.selectLexicalEntity word, count
+    "ao": (count) -> @movement.selectLexicalEntity sentence, count
 
-    "n": (count) -> @find count, false
-    "N": (count) -> @find count, true
-    "/": ->
+    "b": (count) -> @find count, false
+    "B": (count) -> @find count, true
+    "z": ->
       @exit()
       new FindMode(returnToViewport: true).onExit -> new VisualMode
 
-    "y": -> @yank()
-    "Y": (count) -> @movement.selectLine count; @yank()
-    "p": -> chrome.runtime.sendMessage handler: "openUrlInCurrentTab", url: @yank()
-    "P": -> chrome.runtime.sendMessage handler: "openUrlInNewTab", url: @yank()
-    "v": -> new VisualMode
-    "V": -> new VisualLineMode
-    "c": ->
+    "f": -> @yank()
+    "F": (count) -> @movement.selectLine count; @yank()
+    "l": -> chrome.runtime.sendMessage handler: "openUrlInCurrentTab", url: @yank()
+    "L": -> chrome.runtime.sendMessage handler: "openUrlInNewTab", url: @yank()
+    "k": -> new VisualMode
+    "K": -> new VisualLineMode
+    "j": ->
       # If we're already in caret mode, or if the selection looks the same as it would in caret mode, then
       # callapse to anchor (so that the caret-mode selection will seem unchanged).  Otherwise, we're in visual
       # mode and the user has moved the focus, so collapse to that.
@@ -206,7 +206,7 @@ class VisualMode extends KeyHandlerMode
       else
         @movement.collapseSelectionToFocus()
       new CaretMode
-    "o": -> @movement.reverseSelection()
+    "r": -> @movement.reverseSelection()
 
   constructor: (options = {}) ->
     @movement = new Movement options.alterMethod ? "extend"
